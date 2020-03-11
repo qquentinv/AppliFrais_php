@@ -4,10 +4,11 @@
   <head>
     <title>Intranet du Laboratoire Galaxy-Swiss Bourdin</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link href="./styles/styles.css" rel="stylesheet" type="text/css" />
-    <link rel="shortcut icon" type="image/x-icon" href="./images/favicon.ico" />
+    <link rel="shortcut icon" type="image/x-icon" href="./images/favicon.ico" />   
   </head>
-  <body>
+  <body class="container-fluid">
     <div id="page">
       <div id="entete">
         <img src="./images/logo.jpg" id="logoGSB" alt="Laboratoire Galaxy-Swiss Bourdin" title="Laboratoire Galaxy-Swiss Bourdin" />

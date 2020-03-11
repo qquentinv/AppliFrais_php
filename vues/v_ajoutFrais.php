@@ -32,8 +32,8 @@ echo"
 </tr>
 
 </table>
-<input type='submit' value='Valider' name='valider'>
-         <input type='reset' value='Annuler' name='annuler'>
+<input type='submit' class='btn btn-primary' value='Valider' name='valider'>
+         <input type='reset' class='btn btn-secondary' value='Annuler' name='annuler'>
 
 </form>
 ";
