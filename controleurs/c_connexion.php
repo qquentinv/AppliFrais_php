@@ -27,9 +27,18 @@ switch($action){
 		}
 		break;
 	}
-	default :{
+	case 'accueil':{
+		include("vues/v_sommaire.php");
+		include("vues/v_accueil.php");
+		break;
+	}
+	case 'deconnexion':{
 		include("vues/v_connexion.php");
 		break;
 	}
+	/*default :{
+		include("vues/v_connexion.php");
+		break;
+	}*/
 }
 ?>
