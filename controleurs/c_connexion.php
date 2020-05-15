@@ -21,9 +21,10 @@ switch($action){
 			$id = $visiteur['id'];
 			$nom =  $visiteur['nom'];
 			$prenom = $visiteur['prenom'];
-			connecter($id,$nom,$prenom);
+			$role = $visiteur['role'];
+			connecter($id,$nom,$prenom, $role);
 			include("vues/v_sommaire.php");
-			include("vues/v_accueil.php");
+			include("vues/v_accueil.php");			
 		}
 		break;
 	}

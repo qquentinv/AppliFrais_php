@@ -5,6 +5,7 @@ include("vues/v_entete.php") ;
 session_start();
 $pdo = PdoGsb::getPdoGsb();
 $estConnecte = estConnecte();
+
 if(!isset($_REQUEST['uc']) || !$estConnecte){
      $_REQUEST['uc'] = 'connexion';
 }	 
@@ -18,6 +19,9 @@ switch($uc){
 	}
 	case 'etatFrais' :{
 		include("controleurs/c_etatFrais.php");break; 
+	}
+	case 'validerFrais':{
+		include("controleurs/c_validerFrais.php");break;
 	}
 }
 include("vues/v_pied.php") ;

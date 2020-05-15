@@ -54,12 +54,38 @@ class PdoGsb{
  * @return l'id, le nom et le prénom sous la forme d'un tableau associatif 
 */
 	public function getInfosVisiteur($login, $mdp){
-		$req = "select utilisateur.id as id, utilisateur.nom as nom, utilisateur.prenom as prenom from utilisateur 
+		$req = "select utilisateur.id as id, utilisateur.nom as nom, utilisateur.prenom as prenom, utilisateur.role as role from utilisateur 
 		where utilisateur.login='$login' and utilisateur.mdp='$mdp'";
 		$rs = PdoGsb::$monPdo->query($req);
 		$ligne = $rs->fetch();
 		return $ligne;
 	}
+
+/**
+ * Retourne toutes les visiteurs
+ * 
+ * @return le nom et le prénom sous la forme d'un tableau associatif
+ */
+
+ public function getToutesLesVisiteurs(){
+	$req = "select utilisateur.id as id, utilisateur.nom as nom, utilisateur.prenom as prenom from utilisateur where utilisateur.role = 'Visiteur'";
+	$rs = PdoGsb::$monPdo->query($req);
+	$lesVis =array();
+	$laLigne = $rs->fetch();
+	while($laLigne != null)	{
+		$id = $laLigne['id'];
+		$nom =$laLigne['nom'];
+		$prenom =$laLigne['prenom'];
+		$lesVis["$id"]=array(
+	     "id"=>"$id",
+	    "nom"  => "$nom",
+		"prenom"  => "$prenom"
+         );
+		$laLigne = $rs->fetch(); 		
+	}
+	return $lesVis;
+ }
+
 
 /**
  * Retourne sous forme d'un tableau associatif toutes les lignes de frais hors forfait
@@ -145,8 +171,7 @@ class PdoGsb{
 			where lignefraisforfait.idvisiteur = '$idVisiteur' and lignefraisforfait.mois = '$mois'
 			and lignefraisforfait.idfraisforfait = '$unIdFrais'";
 			PdoGsb::$monPdo->exec($req);
-		}
-		
+		}	
 	}
 /**
  * met à jour le nombre de justificatifs de la table ficheFrais
@@ -234,6 +259,21 @@ class PdoGsb{
 		$req = "insert into lignefraishorsforfait (`idVisiteur`, `mois`, `libelle`, `date`, `montant`) values('$idVisiteur','$mois','$libelle','$dateFr','$montant')";
 		PdoGsb::$monPdo->exec($req);
 	}
+
+/**
+ * met à jour les frais hors forfait pour un visiteur un mois donné
+ * à partir des informations fournies en paramètre
+ 
+ * @param $idVisiteur 
+ * @param $libelle : le libelle du frais
+ * @param $date : la date du frais au format français jj//mm/aaaa
+ * @param $montant : le montant
+*/
+public function majFraisHorsForfait($id,$libelle,$date,$montant){
+	$dateEn = dateFrancaisVersAnglais($date);
+	$req =  "update lignefraishorsforfait set date = '" . $dateEn. "', libelle = '" . $libelle . "', montant='" . $montant . "' where id = '" . $id. "'"; 
+	PdoGsb::$monPdo->exec($req);
+}
 /**
  * Supprime le frais hors forfait dont l'id est passé en argument
  
@@ -296,5 +336,20 @@ class PdoGsb{
 		where fichefrais.idvisiteur ='$idVisiteur' and fichefrais.mois = '$mois'";
 		PdoGsb::$monPdo->exec($req);
 	}
+
+	//cumule de toute les montants 
+	public function sumMontantFicheFrais($idVisiteur, $mois){
+		$req = "SELECT sum(montant) as summontant FROM lignefraishorsforfait WHERE idVisiteur='$idVisiteur' AND mois='$mois'";
+		$res = PdoGsb::$monPdo->query($req);
+		$laLigne = $res->fetch();
+		$montant = $laLigne['summontant'];
+		return $montant;
+	}
+
+	//mets à jour le montant remboursée
+	public function majMontantValideFicheFrais($idVisiteur, $mois, $montantValide){
+		$req = "UPDATE fichefrais SET montantValide= $montantValide WHERE idVisiteur = '$idVisiteur' and mois ='$mois'";
+		PdoGsb::$monPdo->exec($req);
+	} 
 }
 ?>
