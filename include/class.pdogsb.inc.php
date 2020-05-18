@@ -98,6 +98,7 @@ class PdoGsb{
  * @param $mois sous la forme aaaamm
  * @return tous les champs des lignes de frais hors forfait sous la forme d'un tableau associatif 
 */
+
 	public function getLesFraisHorsForfait($idVisiteur,$mois){
 	    $req = "select * from lignefraishorsforfait where lignefraishorsforfait.idvisiteur ='$idVisiteur' 
 		and lignefraishorsforfait.mois = '$mois' ";	
@@ -290,7 +291,8 @@ public function majFraisHorsForfait($id,$libelle,$date,$montant){
  * @return un tableau associatif de clé un mois -aaaamm- et de valeurs l'année et le mois correspondant 
 */
 	public function getLesMoisDisponibles($idVisiteur){
-		$req = "select fichefrais.mois as mois from  fichefrais where fichefrais.idvisiteur ='$idVisiteur' 
+		$date = "2019"; // OU $date = date("Y");
+		$req = "select fichefrais.mois as mois from  fichefrais where fichefrais.idvisiteur ='$idVisiteur' and substring(mois,1,4) >= ('".$date. "'-1) 
 		order by fichefrais.mois desc ";
 		$res = PdoGsb::$monPdo->query($req);
 		$lesMois =array();
@@ -337,8 +339,15 @@ public function majFraisHorsForfait($id,$libelle,$date,$montant){
 		PdoGsb::$monPdo->exec($req);
 	}
 
+	public function getTauxFraisForfait(){
+		$req ="SELECT `montant` FROM `fraisforfait`";
+		$res = PdoGsb::$monPdo->query($req);
+		$lesLignes = $res->fetchAll();
+		return $lesLignes;
+	}
+
 	//cumule de toute les montants 
-	public function sumMontantFicheFrais($idVisiteur, $mois){
+	public function sumMontantFicheFraisHF($idVisiteur, $mois){
 		$req = "SELECT sum(montant) as summontant FROM lignefraishorsforfait WHERE idVisiteur='$idVisiteur' AND mois='$mois'";
 		$res = PdoGsb::$monPdo->query($req);
 		$laLigne = $res->fetch();
@@ -351,5 +360,33 @@ public function majFraisHorsForfait($id,$libelle,$date,$montant){
 		$req = "UPDATE fichefrais SET montantValide= $montantValide WHERE idVisiteur = '$idVisiteur' and mois ='$mois'";
 		PdoGsb::$monPdo->exec($req);
 	} 
+
+
+	//get toutes les fiches de frais
+	public function getTousLesFichesFrais(){
+		$date="2019";
+		$req = "select utilisateur.id as idVis, utilisateur.nom as nomVis, utilisateur.prenom as prenomVis, fichefrais.mois as mois, 
+		fichefrais.montantValide as montantVal, fichefrais.dateModif as dateModif, etat.libelle as etatlibelle 
+		from fichefrais inner join utilisateur on fichefrais.idVisiteur = utilisateur.id 
+		inner join etat on fichefrais.idEtat=etat.id where substring(mois,1,4) >= ('".$date. "'-1)";
+		$res = PdoGsb::$monPdo->query($req);
+		$lesLignes = $res->fetchAll();
+		return $lesLignes;
+	}
+	
+	//get toutes les états 
+	public function getTousLesEtats(){
+		$req = "select * from etat";
+		$res = PdoGsb::$monPdo->query($req);
+		$lesLignes = $res->fetchAll();
+		return $lesLignes;
+	}
+
+	public function getInfosVisiteurParId($idVisiteur){
+		$req = "select * from utilisateur where id= '$idVisiteur'";
+		$res = PdoGsb::$monPdo->query($req);
+		$lesLignes = $res->fetchAll();
+		return $lesLignes;
+	}
 }
 ?>

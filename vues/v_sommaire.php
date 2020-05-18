@@ -20,7 +20,7 @@
             <a href='index.php?uc=validerFrais&action=selectionnerVisiteurMois' title='Valider fiches de frais'>Valider fiche de frais</a>
          </li>
          <li class='smenu'>
-            <a href='index.php?uc=etatFrais&action=saisiPayement' title='Saisie payement fiches de frais'>Saisie de payement fiches de frais</a>
+            <a href='index.php?uc=suiviFrais&action=suiviPayement' title='Suivie payement fiches de frais'>Suivie de payement fiches de frais</a>
          </li>";
           }
           else {

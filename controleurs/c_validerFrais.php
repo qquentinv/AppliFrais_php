@@ -25,8 +25,19 @@ switch($action){
 
 		if(isset($_GET["sure"])){
 			$letat= "VA";
-			$montantVal = $pdo->sumMontantFicheFrais($leVisiteur, $leMois);
-			$pdo->majMontantValideFicheFrais($leVisiteur, $leMois, $montantVal);
+			//total des Frais forfait
+			$LesFraisForfaitACalc = $pdo->getLesFraisForfait($leVisiteur, $leMois);
+			$LesTauxFraisForfait = $pdo->getTauxFraisForfait();
+			$TotFichesFrais = 0;
+			for($k=0; $k < count($LesFraisForfaitACalc); $k++){
+				$TotFichesFrais = $TotFichesFrais + $LesFraisForfaitACalc[$k]['quantite']*$LesTauxFraisForfait[$k]['montant'];
+			}
+			//total des frais hors forfait
+			$TotFraisHF = $pdo->sumMontantFicheFraisHF($leVisiteur, $leMois);
+
+			//Cumule des deux totals
+			$TotFrais = $TotFichesFrais + $TotFraisHF;
+			$pdo->majMontantValideFicheFrais($leVisiteur, $leMois, $TotFrais);
 			$pdo->majEtatFicheFrais($leVisiteur,$leMois,$letat);
 		}
 		if (isset($_GET["ETP"])) {
